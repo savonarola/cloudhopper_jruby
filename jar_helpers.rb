@@ -1,5 +1,5 @@
-module JrubyHelpers
-  module RequireJars
+class JARHelpers
+  class << self
     def require_jars(dir)
       jar_files(dir) do |jar_file|
         require(jar_file)
@@ -16,4 +16,3 @@ module JrubyHelpers
     end
   end
 end
-
