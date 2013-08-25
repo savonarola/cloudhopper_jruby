@@ -1,13 +1,13 @@
-require 'test_smpp_session_handler'
+require 'server_smpp_session_handler'
 require 'bind_type_human'
 require 'session_info'
 java_import 'org.slf4j.LoggerFactory'
 
-class DefaultSmppServerHandler
+class ServerHandler
   attr_accessor :logger
 
   def initialize
-    @logger = LoggerFactory.getLogger("DefaultSmppServerHandler")
+    @logger = LoggerFactory.getLogger("ServerHandler")
     @sessions = {}
   end
 
@@ -18,7 +18,7 @@ class DefaultSmppServerHandler
   def sessionCreated(sessionId, session, preparedBindResponse)
     logger.info("session created: #{session}")
     @sessions[sessionId] = session
-    session.serverReady(TestSmppSessionHandler.new(session))
+    session.serverReady(ServerSmppSessionHandler.new)
   end
 
   def sessionDestroyed(sessionId, session)

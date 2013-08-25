@@ -1,6 +1,6 @@
 require 'jruby_deps'
 
-require 'default_smpp_server_handler'
+require 'server_handler'
 require 'smpp_server'
 require 'user_interaction/deliver_loop'
 
@@ -12,7 +12,7 @@ end
 port = ARGV[0].to_i
 ussd = ARGV[1]
 
-serverHandler = DefaultSmppServerHandler.new
+serverHandler = ServerHandler.new
 server = SmppServer.new(port, serverHandler)
 
 deliver_loop = UserInteraction::DeliverLoop.new(serverHandler, ussd)
