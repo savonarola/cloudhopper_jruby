@@ -12,10 +12,10 @@ end
 port = ARGV[0].to_i
 ussd = ARGV[1]
 
-serverHandler = ServerHandler.new
-server = SmppServer.new(port, serverHandler)
+server_handler = ServerHandler.new
+server = SmppServer.new(port, server_handler)
 
-deliver_loop = UserInteraction::DeliverLoop.new(serverHandler, ussd)
+deliver_loop = UserInteraction::DeliverLoop.new(server_handler, ussd)
 deliver_loop.run
 
 server.stop
