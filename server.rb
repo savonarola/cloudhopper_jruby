@@ -1,36 +1,25 @@
 require 'jruby_deps'
 
-java_import 'com.cloudhopper.smpp.SmppServerConfiguration'
-java_import 'com.cloudhopper.smpp.impl.DefaultSmppServer'
-
-require 'smpp_executors'
 require 'default_smpp_server_handler'
+require 'smpp_server'
+require 'user_interaction/deliver_loop'
 
-executors = SmppExecutors.new
+if ARGV.size < 1
+  puts "Usage: #{$0} PORT [ussd]\n"
+  exit(1)
+end
 
-configuration = SmppServerConfiguration.new
-configuration.setPort(2776)
-configuration.setMaxConnectionSize(10)
-configuration.setNonBlockingSocketsEnabled(true)
-configuration.setDefaultRequestExpiryTimeout(30000)
-configuration.setDefaultWindowMonitorInterval(15000)
-configuration.setDefaultWindowSize(5)
-configuration.setDefaultWindowWaitTimeout(configuration.getDefaultRequestExpiryTimeout)
-configuration.setDefaultSessionCountersEnabled(true)
-configuration.setJmxEnabled(true)
+port = ARGV[0].to_i
+ussd = ARGV[1]
 
-smppServer = DefaultSmppServer.new(configuration, DefaultSmppServerHandler.new, executors.executor, executors.monitor_executor)
+serverHandler = DefaultSmppServerHandler.new
+server = SmppServer.new(port, serverHandler)
 
-puts "Starting SMPP server..."
-smppServer.start
-puts "SMPP server started"
+deliver_loop = UserInteraction::DeliverLoop.new(serverHandler, ussd)
+deliver_loop.run
 
-puts "Press enter to stop server"
-gets
+server.stop
 
-puts "Stopping SMPP server..."
-smppServer.stop
-executors.stop
-puts "SMPP server stopped"
+
 
 
